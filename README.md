@@ -2,7 +2,7 @@
 #### Git submodule
 1. Add to the project
 ```declarative
-git submodule add https://github.com/flsrg/LlmPollingClient libs/llm-client
+git submodule add https://github.com/flsrg/llm-polling-client
 ```
 2. Update after clone
 ```declarative
