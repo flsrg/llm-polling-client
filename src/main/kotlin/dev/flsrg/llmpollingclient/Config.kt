@@ -19,6 +19,7 @@ object Config {
     }
 
     val streamingClient = HttpClient(CIO) {
+        expectSuccess = true
         install(ContentNegotiation) {
             json(format)
         }
