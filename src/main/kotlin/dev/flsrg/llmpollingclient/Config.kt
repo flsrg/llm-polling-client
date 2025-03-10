@@ -18,7 +18,7 @@ object Config {
         encodeDefaults = true
     }
 
-    val sreamingClient = HttpClient(CIO) {
+    val streamingClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(format)
         }

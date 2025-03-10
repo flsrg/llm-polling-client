@@ -23,7 +23,7 @@ class OpenRouterApi: Api {
 
         log.info("Requesting completions from OpenRouter (payload: {})", requestPayload)
 
-        Config.sreamingClient.preparePost(config.baseUrl) {
+        Config.streamingClient.preparePost(config.baseUrl) {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${config.apiKey}")
                 append(HttpHeaders.ContentType, "application/json")
