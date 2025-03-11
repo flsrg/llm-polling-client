@@ -30,7 +30,9 @@ class OpenRouterClient(config: ClientConfig): Client(config) {
             if (rememberHistory && content != null) {
                 contentBuffer.append(response.choices.first().delta?.content)
             }
-        }.onCompletion {
+        }.onCompletion { exception ->
+            if (exception != null) throw exception
+
             if (rememberHistory) {
                 val assistantMessage = ChatMessage(role = "assistant", content = contentBuffer.toString())
                 if (assistantMessage.content.isEmpty()) {
