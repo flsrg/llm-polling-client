@@ -21,7 +21,9 @@ class OpenRouterApi: Api {
             messages = getMessages(messagesJson)
         )
 
-        log.info("Requesting completions from OpenRouter (payload: {})", requestPayload)
+        val messagesCount = getMessagesCount(requestPayload.messages)
+        log.info("Requesting completions from OpenRouter " +
+                "(${messagesCount.first} userMessages, ${messagesCount.second} assistantMessages)")
 
         Config.streamingClient.preparePost(config.baseUrl) {
             headers {
@@ -37,5 +39,11 @@ class OpenRouterApi: Api {
 
     private fun getMessages(messagesJson: List<String>) = messagesJson.map {
         Config.format.decodeFromString<OpenRouterClient.ChatMessage>(it)
+    }
+
+    private fun getMessagesCount(messages: List<OpenRouterClient.ChatMessage>): Pair<Int, Int> {
+        val userMessages = messages.count { it.role == "user" }
+        val assistantMessages = messages.count { it.role == "assistant" }
+        return Pair(userMessages, assistantMessages)
     }
 }

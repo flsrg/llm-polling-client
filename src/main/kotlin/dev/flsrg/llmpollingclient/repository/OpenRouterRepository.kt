@@ -20,7 +20,7 @@ class OpenRouterRepository(private val api: Api): Repository {
     ): Flow<T> {
         return flow<T> {
             api.getCompletionsStream(config, chatMessages).collect { response ->
-                log.debug("Received API response (code={})", response.status.value)
+                log.info("Received API response (code={})", response.status.value)
 
                 val channel: ByteReadChannel = response.bodyAsChannel()
                 val isScopeActive = currentCoroutineContext().isActive
