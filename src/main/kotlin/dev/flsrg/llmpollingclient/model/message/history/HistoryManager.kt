@@ -1,18 +1,17 @@
 package dev.flsrg.llmpollingclient.model.message.history
 
 import dev.flsrg.llmpollingclient.client.ClientConfig
-import dev.flsrg.llmpollingclient.model.ChatMessage
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingDeque
 
-class HistoryManager(private val config: ClientConfig) {
-    private val chatHistories = ConcurrentHashMap<String, LinkedBlockingDeque<ChatMessage>>()
+class HistoryManager<T>(private val config: ClientConfig) {
+    private val chatHistories = ConcurrentHashMap<String, LinkedBlockingDeque<T>>()
 
-    fun getHistory(chatId: String): List<ChatMessage> {
+    fun getHistory(chatId: String): List<T> {
         return chatHistories[chatId]?.toList() ?: emptyList()
     }
 
-    fun addMessage(chatId: String, message: ChatMessage) {
+    fun addMessage(chatId: String, message: T) {
         chatHistories
             .getOrPut(chatId) { LinkedBlockingDeque() }
             .apply {

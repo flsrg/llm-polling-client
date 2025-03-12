@@ -2,8 +2,8 @@ package dev.flsrg.llmpollingclient.api
 
 import dev.flsrg.llmpollingclient.Config
 import dev.flsrg.llmpollingclient.client.ClientConfig
-import dev.flsrg.llmpollingclient.model.ChatMessage
-import dev.flsrg.llmpollingclient.model.ChatRequest
+import dev.flsrg.llmpollingclient.client.OpenRouterClient
+import dev.flsrg.llmpollingclient.client.OpenRouterClient.ChatRequest
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -13,12 +13,12 @@ import org.slf4j.LoggerFactory
 class OpenRouterApi: Api {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun getCompletionsStream(config: ClientConfig, messages: List<ChatMessage>) = flow<HttpResponse> {
+    override fun getCompletionsStream(config: ClientConfig, messagesJson: List<String>) = flow<HttpResponse> {
         val requestPayload = ChatRequest(
             model = config.model.id,
             chainOfThought = config.chainOfThoughts,
             stream = config.chainOfThoughts,
-            messages = messages.toList()
+            messages = getMessages(messagesJson)
         )
 
         log.info("Requesting completions from OpenRouter (payload: {})", requestPayload)
@@ -33,5 +33,9 @@ class OpenRouterApi: Api {
         }.execute { response ->
             emit(response)
         }
+    }
+
+    private fun getMessages(messagesJson: List<String>) = messagesJson.map {
+        Config.format.decodeFromString<OpenRouterClient.ChatMessage>(it)
     }
 }

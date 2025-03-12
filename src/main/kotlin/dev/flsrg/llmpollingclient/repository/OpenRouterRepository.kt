@@ -1,10 +1,7 @@
 package dev.flsrg.llmpollingclient.repository
 
-import dev.flsrg.llmpollingclient.Config
 import dev.flsrg.llmpollingclient.api.Api
 import dev.flsrg.llmpollingclient.client.ClientConfig
-import dev.flsrg.llmpollingclient.model.ChatMessage
-import dev.flsrg.llmpollingclient.model.ChatResponse
 import io.ktor.client.statement.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.currentCoroutineContext
@@ -16,8 +13,12 @@ import org.slf4j.LoggerFactory
 class OpenRouterRepository(private val api: Api): Repository {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun getCompletionsStream(config: ClientConfig, chatMessages: List<ChatMessage>): Flow<ChatResponse> {
-        return flow<ChatResponse> {
+    override fun <T> getCompletionsStream(
+        config: ClientConfig,
+        chatMessages: List<String>,
+        transform: (String) -> T,
+    ): Flow<T> {
+        return flow<T> {
             api.getCompletionsStream(config, chatMessages).collect { response ->
                 log.debug("Received API response (code={})", response.status.value)
 
@@ -31,8 +32,7 @@ class OpenRouterRepository(private val api: Api): Repository {
                         val json = line.removePrefix("data: ").trim()
                         if (json == "[DONE]") break
 
-                        val chatResponse = Config.format.decodeFromString<ChatResponse>(json)
-                        emit(chatResponse)
+                        emit(transform(json))
                     }
                 }
             }
