@@ -17,14 +17,18 @@ class OpenRouterClient(config: ClientConfig): Client<ChatResponse, ChatMessage>(
     private val repository = OpenRouterRepository(api)
     override val histManager = HistoryManager<ChatMessage>(config)
 
-    override fun askChat(chatId: String, message: String, rememberHistory: Boolean): Flow<ChatResponse> {
+    override fun askChat(chatId: String, message: String, rememberHistory: Boolean, systemMessage: String?): Flow<ChatResponse> {
         val newMessage = ChatMessage(role = "user", content = message)
 
-        val messages: List<ChatMessage> = if (rememberHistory) {
+        val messages: MutableList<ChatMessage> = if (rememberHistory) {
             histManager.addMessage(chatId, newMessage)
-            histManager.getHistory(chatId)
+            histManager.getHistory(chatId).toMutableList()
         } else {
-            listOf(newMessage)
+            mutableListOf(newMessage)
+        }.also {
+            if (systemMessage != null) {
+                it.add(0, ChatMessage(role = "system", content = systemMessage))
+            }
         }
 
         val payload: List<String> = messages.map {
