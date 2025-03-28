@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 import javax.net.SocketFactory
 
 object Config {
-    const val API_CONNECTION_TIMEOUT_MS = 10 * 60 * 1000L
+    const val API_CONNECTION_TIMEOUT_MS = 5 * 60 * 1000L
 
     val format = Json {
         ignoreUnknownKeys = true
@@ -34,7 +34,7 @@ object Config {
             config {
                 socketFactory(SocketFactory.getDefault())
                 callTimeout(0, TimeUnit.MILLISECONDS)
-                connectTimeout(0, TimeUnit.MILLISECONDS)
+                connectTimeout(API_CONNECTION_TIMEOUT_MS, TimeUnit.MILLISECONDS)
                 readTimeout(0, TimeUnit.MILLISECONDS)
                 writeTimeout(0, TimeUnit.MILLISECONDS)
             }
