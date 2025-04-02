@@ -17,7 +17,7 @@ class OpenRouterClient(config: ClientConfig): Client<ChatResponse, ChatMessage>(
     private val repository = OpenRouterRepository(api)
     override val histManager = HistoryManager<ChatMessage>(config)
 
-    override fun askChat(chatId: String, message: String, rememberHistory: Boolean, systemMessage: String?): Flow<ChatResponse> {
+    override fun askChat(chatId: String, model: Model, message: String, rememberHistory: Boolean, systemMessage: String?): Flow<ChatResponse> {
         val newMessage = ChatMessage(role = "user", content = message)
 
         val messages: MutableList<ChatMessage> = if (rememberHistory) {
@@ -37,7 +37,7 @@ class OpenRouterClient(config: ClientConfig): Client<ChatResponse, ChatMessage>(
 
         val contentBuffer = StringBuilder()
 
-        return repository.getCompletionsStream<ChatResponse>(config, payload) {
+        return repository.getCompletionsStream<ChatResponse>(config, model, payload) {
             transform(it)
         }.onEach { response ->
             val content = response.choices.first().delta?.content
@@ -74,7 +74,7 @@ class OpenRouterClient(config: ClientConfig): Client<ChatResponse, ChatMessage>(
     data class ChatRequest(
         val model: String,
         @SerialName("chain_of_thought")
-        val chainOfThought: Boolean = true,
+        val chainOfThought: Boolean = false,
         val messages: List<ChatMessage>,
         val stream: Boolean = true
     )

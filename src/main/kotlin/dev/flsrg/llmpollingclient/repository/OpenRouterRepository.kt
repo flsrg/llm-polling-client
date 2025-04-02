@@ -2,6 +2,7 @@ package dev.flsrg.llmpollingclient.repository
 
 import dev.flsrg.llmpollingclient.api.Api
 import dev.flsrg.llmpollingclient.client.ClientConfig
+import dev.flsrg.llmpollingclient.client.Model
 import io.ktor.client.statement.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.currentCoroutineContext
@@ -15,11 +16,12 @@ class OpenRouterRepository(private val api: Api): Repository {
 
     override fun <T> getCompletionsStream(
         config: ClientConfig,
+        model: Model,
         chatMessages: List<String>,
         transform: (String) -> T,
     ): Flow<T> {
         return flow<T> {
-            api.getCompletionsStream(config, chatMessages).collect { response ->
+            api.getCompletionsStream(config, model, chatMessages).collect { response ->
                 log.info("Received API response (code={})", response.status.value)
 
                 val channel: ByteReadChannel = response.bodyAsChannel()

@@ -2,6 +2,7 @@ package dev.flsrg.llmpollingclient.api
 
 import dev.flsrg.llmpollingclient.Config
 import dev.flsrg.llmpollingclient.client.ClientConfig
+import dev.flsrg.llmpollingclient.client.Model
 import dev.flsrg.llmpollingclient.client.OpenRouterClient
 import dev.flsrg.llmpollingclient.client.OpenRouterClient.ChatRequest
 import io.ktor.client.request.*
@@ -13,11 +14,11 @@ import org.slf4j.LoggerFactory
 class OpenRouterApi: Api {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun getCompletionsStream(config: ClientConfig, messagesJson: List<String>) = flow<HttpResponse> {
+    override fun getCompletionsStream(config: ClientConfig, model: Model, messagesJson: List<String>) = flow<HttpResponse> {
         val requestPayload = ChatRequest(
-            model = config.model.id,
-            chainOfThought = config.chainOfThoughts,
-            stream = config.chainOfThoughts,
+            model = model.id,
+            chainOfThought = model.reasoning,
+            stream = true,
             messages = getMessages(messagesJson)
         )
 
@@ -29,7 +30,7 @@ class OpenRouterApi: Api {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${config.apiKey}")
                 append(HttpHeaders.ContentType, "application/json")
-                if (config.chainOfThoughts) append(HttpHeaders.Accept, "text/event-stream")
+                append(HttpHeaders.Accept, "text/event-stream")
             }
             setBody(requestPayload)
         }.execute { response ->

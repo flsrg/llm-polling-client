@@ -8,6 +8,7 @@ abstract class Client<T, R>(internal val config: ClientConfig) {
 
     abstract fun askChat(
         chatId: String,
+        model: Model,
         message: String,
         rememberHistory: Boolean = true,
         systemMessage: String? = null,

@@ -1,19 +1,20 @@
 package dev.flsrg.llmpollingclient.client
 
-import dev.flsrg.llmpollingclient.Config
-
 sealed class ClientConfig(
     val baseUrl: String,
     val apiKey: String,
-    val model: Config.Model,
-    val maxHistoryLength: Int = 20,
-    val chainOfThoughts: Boolean = true,
+    val maxHistoryLength: Int = 10,
 )
 
-class OpenRouterDeepseekConfig(
+data class Model(val id: String, val reasoning: Boolean)
+
+class OpenRouterConfig(
     baseUrl: String = "https://openrouter.ai/api/v1/chat/completions",
     apiKey: String,
-    model: Config.Model = Config.Model.DEEPSEEK_R1,
     maxHistoryLength: Int = 20,
-    chainOfThought: Boolean = true,
-) : ClientConfig(baseUrl, apiKey, model, maxHistoryLength, chainOfThought)
+) : ClientConfig(baseUrl, apiKey, maxHistoryLength) {
+    companion object {
+        val DEEPSEEK_R1 = Model("deepseek/deepseek-r1:free", reasoning = true)
+        val DEEPSEEK_V3 = Model("deepseek/deepseek-chat-v3-0324:free", reasoning = false)
+    }
+}

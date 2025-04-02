@@ -40,8 +40,4 @@ object Config {
             }
         }
     }
-
-    enum class Model(val id: String) {
-        DEEPSEEK_R1("deepseek/deepseek-r1:free")
-    }
 }
