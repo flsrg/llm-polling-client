@@ -15,6 +15,6 @@ class OpenRouterConfig(
 ) : ClientConfig(baseUrl, apiKey, maxHistoryLength) {
     companion object {
         val DEEPSEEK_R1 = Model("deepseek/deepseek-r1:free", reasoning = true)
-        val DEEPSEEK_V3 = Model("deepseek/deepseek-chat-v3-0324:free", reasoning = false)
+        val DEEPSEEK_V3 = Model("deepseek/deepseek-chat-v3-0324:free", reasoning = true)
     }
 }
