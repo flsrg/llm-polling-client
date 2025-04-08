@@ -1,18 +1,14 @@
 package dev.flsrg.llmpollingclient.client
 
-import dev.flsrg.llmpollingclient.model.message.history.HistoryManager
+import dev.flsrg.llmpollingclient.model.ChatMessage
+import dev.flsrg.llmpollingclient.model.ChatResponse
 import kotlinx.coroutines.flow.Flow
 
-abstract class Client<T, R>(internal val config: ClientConfig) {
-    abstract val histManager: HistoryManager<R>
-
+abstract class Client(internal val config: ClientConfig) {
     abstract fun askChat(
         chatId: String,
         model: Model,
-        message: String,
-        rememberHistory: Boolean = true,
-        systemMessage: String? = null,
-    ): Flow<T>
-
-    open fun clearHistory(chatId: String) = histManager.clearHistory(chatId)
+        messages: List<ChatMessage>,
+        systemMessage: ChatMessage? = null,
+    ): Flow<ChatResponse>
 }

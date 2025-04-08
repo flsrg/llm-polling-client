@@ -3,8 +3,8 @@ package dev.flsrg.llmpollingclient.api
 import dev.flsrg.llmpollingclient.Config
 import dev.flsrg.llmpollingclient.client.ClientConfig
 import dev.flsrg.llmpollingclient.client.Model
-import dev.flsrg.llmpollingclient.client.OpenRouterClient
-import dev.flsrg.llmpollingclient.client.OpenRouterClient.ChatRequest
+import dev.flsrg.llmpollingclient.model.ChatMessage
+import dev.flsrg.llmpollingclient.model.ChatRequest
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -39,10 +39,10 @@ class OpenRouterApi: Api {
     }
 
     private fun getMessages(messagesJson: List<String>) = messagesJson.map {
-        Config.format.decodeFromString<OpenRouterClient.ChatMessage>(it)
+        Config.format.decodeFromString<ChatMessage>(it)
     }
 
-    private fun getMessagesCount(messages: List<OpenRouterClient.ChatMessage>): Pair<Int, Int> {
+    private fun getMessagesCount(messages: List<ChatMessage>): Pair<Int, Int> {
         val userMessages = messages.count { it.role == "user" }
         val assistantMessages = messages.count { it.role == "assistant" }
         return Pair(userMessages, assistantMessages)
