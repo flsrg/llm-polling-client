@@ -33,10 +33,10 @@ class OpenRouterRepository(private val api: Api): Repository {
                     val line = channel.readUTF8Line() ?: break
 
                     if (line.startsWith("data: ")) {
-                        validate(line)
 
                         val json = line.removePrefix("data: ").trim()
                         if (json == "[DONE]") break
+                        validate(json)
 
                         emit(transform(json))
                     }
@@ -48,7 +48,7 @@ class OpenRouterRepository(private val api: Api): Repository {
     private fun validate(json: String) {
         if (json.contains("error")) {
             val error = Json.parseToJsonElement(json).jsonObject["error"]
-            throw Exception("API error: $error")
+            if (error != null) throw Exception("API error: $error")
         }
     }
 }
