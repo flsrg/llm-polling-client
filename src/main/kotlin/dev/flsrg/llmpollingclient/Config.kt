@@ -1,15 +1,12 @@
 package dev.flsrg.llmpollingclient
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.HttpTimeoutConfig
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.sse.SSE
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.sse.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
-import java.util.concurrent.TimeUnit
-import javax.net.SocketFactory
 
 object Config {
     const val API_CONNECTION_TIMEOUT_MS = 5 * 60 * 1000L
@@ -19,7 +16,7 @@ object Config {
         encodeDefaults = true
     }
 
-    val streamingClient = HttpClient(OkHttp) {
+    val streamingClient = HttpClient(CIO) {
         expectSuccess = true
         install(ContentNegotiation) {
             json(format)
@@ -31,12 +28,10 @@ object Config {
         }
         install(SSE)
         engine {
-            config {
-                socketFactory(SocketFactory.getDefault())
-                callTimeout(0, TimeUnit.MILLISECONDS)
-                connectTimeout(API_CONNECTION_TIMEOUT_MS, TimeUnit.MILLISECONDS)
-                readTimeout(0, TimeUnit.MILLISECONDS)
-                writeTimeout(0, TimeUnit.MILLISECONDS)
+            requestTimeout = 0
+            endpoint {
+                connectTimeout = API_CONNECTION_TIMEOUT_MS
+                socketTimeout = 0
             }
         }
     }
