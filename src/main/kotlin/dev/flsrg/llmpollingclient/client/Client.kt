@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class Client(internal val config: ClientConfig) {
     abstract fun askChat(
-        chatId: String,
         model: Model,
         messages: List<ChatMessage>,
         systemMessage: ChatMessage? = null,

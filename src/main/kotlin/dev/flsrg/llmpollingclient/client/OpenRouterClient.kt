@@ -11,7 +11,7 @@ class OpenRouterClient(config: ClientConfig): Client(config) {
     private val api = OpenRouterApi()
     private val repository = OpenRouterRepository(api)
 
-    override fun askChat(chatId: String, model: Model, messages: List<ChatMessage>, systemMessage: ChatMessage?): Flow<ChatResponse> {
+    override fun askChat(model: Model, messages: List<ChatMessage>, systemMessage: ChatMessage?): Flow<ChatResponse> {
         val payload: List<String> = if (systemMessage != null) {
             listOf(systemMessage) + messages
         } else {
@@ -20,7 +20,7 @@ class OpenRouterClient(config: ClientConfig): Client(config) {
             Config.format.encodeToString(it)
         }
 
-        return repository.getCompletionsStream<ChatResponse>(config, model, payload) {
+        return repository.getCompletionsStream(config, model, payload) {
             Config.format.decodeFromString<ChatResponse>(it)
         }
     }

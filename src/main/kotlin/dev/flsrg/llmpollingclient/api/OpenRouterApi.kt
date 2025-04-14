@@ -6,7 +6,6 @@ import dev.flsrg.llmpollingclient.client.Model
 import dev.flsrg.llmpollingclient.model.ChatMessage
 import dev.flsrg.llmpollingclient.model.ChatRequest
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.flow.flow
 import org.slf4j.LoggerFactory
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory
 class OpenRouterApi: Api {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun getCompletionsStream(config: ClientConfig, model: Model, messagesJson: List<String>) = flow<HttpResponse> {
+    override fun getCompletionsStream(config: ClientConfig, model: Model, messagesJson: List<String>) = flow {
         val requestPayload = ChatRequest(
             model = model.id,
             chainOfThought = model.reasoning,

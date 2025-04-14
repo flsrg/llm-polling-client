@@ -9,7 +9,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 object Config {
-    const val API_CONNECTION_TIMEOUT_MS = 5 * 60 * 1000L
+    private const val API_CONNECTION_TIMEOUT_MS = 5 * 60 * 1000L
 
     val format = Json {
         ignoreUnknownKeys = true

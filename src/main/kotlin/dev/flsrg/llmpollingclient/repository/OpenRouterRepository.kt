@@ -22,7 +22,7 @@ class OpenRouterRepository(private val api: Api): Repository {
         chatMessages: List<String>,
         transform: (String) -> T,
     ): Flow<T> {
-        return flow<T> {
+        return flow {
             api.getCompletionsStream(config, model, chatMessages).collect { response ->
                 log.info("Received API response (code={})", response.status.value)
 
